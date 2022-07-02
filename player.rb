@@ -1,25 +1,8 @@
-class Player
-  attr_reader :name, :money, :cards
+class Player < User
+  attr_reader :name
 
   def initialize(name)
     @name = name
-    @money = 100
-    @cards = {}
-  end
-
-  def give_money(sum)
-    @money -= sum
-  end
-
-  def add_money(sum)
-    @money += sum
-  end
-
-  def add_card(key, value)
-    @cards[key] = value
-  end
-
-  def delete_cards
-    @cards = {}
+    super()
   end
 end

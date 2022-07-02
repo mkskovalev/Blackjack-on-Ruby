@@ -1,10 +1,9 @@
 class User
-  attr_reader :name, :money, :cards
+  attr_reader :money, :cards
 
-  def initialize(name)
-    @name = name
+  def initialize
     @money = 100
-    @cards = {}
+    @cards = []
   end
 
   def give_money(sum)
@@ -15,11 +14,14 @@ class User
     @money += sum
   end
 
-  def add_cards(key, value)
-    @cards.merge(cards)
+  def add_cards(card)
+    @cards << card
   end
 
   def delete_cards
-    @cards = {}
+    @cards = []
+  end
+
+  def score
   end
 end
