@@ -1,18 +1,20 @@
 # frozen_string_literal: true
 
 require './user'
-require './player'
-require './dealer'
 require './deck'
 
 class Interface
+
+  MAX_POINT = 21
+  MAX_CARDS = 3
+  DEALER_MAX_SCORE = 17
 
   def run
     puts 'Введите ваше имя:'
     name = gets.chomp.to_s
 
-    @player = Player.new(name)
-    @dealer = Dealer.new('Dealer')
+    @player = User.new(name)
+    @dealer = User.new('Dealer')
 
     loop do
       break if no_money?
@@ -41,7 +43,11 @@ class Interface
   end
 
   def round
+    count = 1
+
     loop do
+      break if count == 2
+
       puts "Карты игорка #{@player.name}:"
       @player.cards.each { |card| print "#{card.face}#{card.suit}," }
       puts " Очки - #{@player.score}"
@@ -58,15 +64,15 @@ class Interface
       case action
       when 1
         add_card(@player)
-        break if @player.score > 21
+        break if @player.score > MAX_POINT
 
         dealer_turn
 
-        break if @player.cards.count == 3
+        break if @player.cards.count == MAX_CARDS
 
       when 2
         dealer_turn
-
+        count += 1
       else
         dealer_turn
         break
@@ -82,14 +88,14 @@ class Interface
     @dealer.cards.each { |card| print "#{card.face}#{card.suit}," }
     puts " Очки - #{@dealer.score}"
 
-    if (@player.score == @dealer.score) || (@player.score > 21 && @dealer.score > 21)
+    if (@player.score == @dealer.score) || (@player.score > MAX_POINT && @dealer.score > MAX_POINT)
       @player.add_money(@bank / 2)
       @dealer.add_money(@bank / 2)
       puts 'Ничья! Банк поделен поровну.'
-    elsif @dealer.score > 21 && @player.score < 21
+    elsif @dealer.score > MAX_POINT && @player.score < MAX_POINT
       @player.add_money(@bank)
       puts "Победил игрок #{@player.name}!"
-    elsif @player.score > 21 && @dealer.score < 21
+    elsif @player.score > MAX_POINT && @dealer.score < MAX_POINT
       @dealer.add_money(@bank)
       puts "Победил #{@dealer.name}!"
     elsif @player.score > @dealer.score
@@ -108,12 +114,12 @@ class Interface
   end
 
   def dealer_turn
-    if @dealer.score >= 17
+    if @dealer.score >= DEALER_MAX_SCORE
       puts "#{@dealer.name} пропускает ход."
       return
     end
 
-    return if @dealer.cards.count > 2
+    return if @dealer.cards.count == MAX_CARDS
 
     add_card(@dealer)
     puts "#{@dealer.name} взял карту."
@@ -125,6 +131,6 @@ class Interface
   end
 
   def no_money?
-    true if @player.money.zero? || @dealer.money.zero?
+    @player.money.zero? || @dealer.money.zero?
   end
 end

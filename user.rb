@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 class User
-  attr_reader :money, :cards
+  attr_reader :name, :money, :cards
 
-  def initialize
+  def initialize(name)
+    @name = name
     @money = 100
     @cards = []
   end
